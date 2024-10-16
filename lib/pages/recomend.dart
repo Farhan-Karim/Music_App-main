@@ -77,6 +77,33 @@ class _RecommendationScreenState extends State<ReccomendationScreen> {
     }
   }
 
+  void _playNextSong() {
+    setState(() {
+      if (recommendedSong != null) {
+        playedSongs.add(recommendedSong!); // Add current song to played list
+      }
+      recommendedSong = _getRecommendedSong(widget.prediction); // Get next song
+      if (recommendedSong != null) {
+        context
+            .read<AudioProvider>()
+            .playSong(recommendedSong!); // Play next song
+      }
+    });
+  }
+
+  void _playPreviousSong() {
+    setState(() {
+      if (playedSongs.isNotEmpty) {
+        recommendedSong = playedSongs.removeLast(); // Get last played song
+        if (recommendedSong != null) {
+          context
+              .read<AudioProvider>()
+              .playSong(recommendedSong!); // Play the previous song
+        }
+      }
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     String imagePath = getImagePath(widget.prediction);
@@ -143,29 +170,48 @@ class _RecommendationScreenState extends State<ReccomendationScreen> {
                             ),
                           ),
                           const SizedBox(height: 20),
-                          // InkWell(
-                          //   onTap: () {
-                          //     audioProvider.togglePlayPause();
-                          //   },
-                          //   child: Icon(
-                          //     size: 70,
-                          //     color: Colors.blueAccent,
-                          //     audioProvider.isPlaying
-                          //         ? Icons.pause_circle_filled
-                          //         : Icons.play_circle_filled,
-                          //   ),
-                          // ),
-                          IconButton(
-                            icon: Icon(
-                              audioProvider.isPlaying
-                                  ? Icons.pause_circle_filled
-                                  : Icons.play_circle_filled,
-                              color: Colors.blueAccent,
-                              size: 70,
-                            ),
-                            onPressed: () {
-                              audioProvider.togglePlayPause();
-                            },
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceAround,
+                            children: [
+                              // Back IconButton
+
+                              IconButton(
+                                icon: const Icon(
+                                  Icons.skip_previous,
+                                  color: Colors.blueAccent,
+                                  size: 50,
+                                ),
+                                onPressed: () {
+                                  _playPreviousSong(); // Play previous song
+                                },
+                              ),
+
+                              // Play/Pause IconButton
+                              IconButton(
+                                icon: Icon(
+                                  audioProvider.isPlaying
+                                      ? Icons.pause_circle_filled
+                                      : Icons.play_circle_filled,
+                                  color: Colors.blueAccent,
+                                  size: 70,
+                                ),
+                                onPressed: () {
+                                  audioProvider.togglePlayPause();
+                                },
+                              ),
+
+                              // Next IconButton
+                              IconButton(
+                                icon: const Icon(
+                                  Icons.skip_next,
+                                  color: Colors.blueAccent,
+                                  size: 50,
+                                ),
+                                onPressed: () {
+                                  _playNextSong(); // Logic to play the next song
+                                },
+                              ),
+                            ],
                           ),
                         ],
                       )
