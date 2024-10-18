@@ -5,6 +5,7 @@ import 'package:on_audio_query/on_audio_query.dart';
 import 'package:tflite_v2/tflite_v2.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'recomend.dart';
+import 'dart:math' as math;
 
 class CameraScreen extends StatefulWidget {
   const CameraScreen(
@@ -80,18 +81,31 @@ class _CameraScreenState extends State<CameraScreen> {
         path: path,
         numResults: 5,
       );
-      setState(() {
-        _prediction = recognitions?.isNotEmpty == true
-            ? recognitions!.first['label']
-            : 'No Prediction';
-      });
+
+      if (recognitions != null && recognitions.isNotEmpty) {
+        setState(() {
+          _prediction = recognitions.first['label'];
+        });
+
+        // Print predicted label and confidence (accuracy)
+        double confidence =
+            recognitions.first['confidence'] ?? 0.0; // Confidence score
+        print(
+            "Predicted Label: $_prediction, Confidence: ${confidence * 100}%");
+      } else {
+        print('No Prediction');
+      }
+
+      // Navigate to the recommendation screen with the prediction
       Navigator.push(
-          context,
-          MaterialPageRoute(
-              builder: (context) => ReccomendationScreen(
-                    prediction: _prediction!,
-                    songs: widget.songs,
-                  )));
+        context,
+        MaterialPageRoute(
+          builder: (context) => ReccomendationScreen(
+            prediction: _prediction!,
+            songs: widget.songs,
+          ),
+        ),
+      );
     } catch (e) {
       print("Error classifying image: $e");
     }
@@ -153,7 +167,12 @@ class _CameraScreenState extends State<CameraScreen> {
                         width: MediaQuery.of(context).size.width * 0.9,
                         child: AspectRatio(
                           aspectRatio: _controller!.value.aspectRatio,
-                          child: CameraPreview(_controller!),
+                          child: Transform(
+                            alignment: Alignment.center,
+                            transform: Matrix4.rotationY(
+                                math.pi), // Flip the preview horizontally
+                            child: CameraPreview(_controller!),
+                          ),
                         ),
                       ),
                     ),
@@ -169,7 +188,7 @@ class _CameraScreenState extends State<CameraScreen> {
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(40.0),
                       ),
-                      child: Image.asset("assets/images/think.png")),
+                      child: Icon(Icons.camera_alt_sharp, size: 70)),
                 ),
               ],
             ),

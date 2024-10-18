@@ -8,6 +8,7 @@ class AudioProvider extends ChangeNotifier {
   SongModel? currentSong;
   bool isPlaying = false;
 
+  // Play a song
   Future<void> playSong(SongModel song) async {
     try {
       await audioPlayer.setAudioSource(AudioSource.uri(
@@ -28,6 +29,7 @@ class AudioProvider extends ChangeNotifier {
     }
   }
 
+  // Toggle play/pause
   void togglePlayPause() async {
     if (audioPlayer.playing) {
       await audioPlayer.pause();
@@ -41,9 +43,22 @@ class AudioProvider extends ChangeNotifier {
     notifyListeners();
   }
 
+  // Stop playback
   void stop() async {
     await audioPlayer.stop();
     isPlaying = false;
+    notifyListeners();
+  }
+
+  // Getter for current song's position
+  Duration get position => audioPlayer.position;
+
+  // Getter for current song's duration
+  Duration? get duration => audioPlayer.duration;
+
+  // Seek to a specific position in the song
+  Future<void> seekTo(Duration position) async {
+    await audioPlayer.seek(position);
     notifyListeners();
   }
 

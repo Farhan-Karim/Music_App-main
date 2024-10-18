@@ -38,6 +38,7 @@ dependencies:
   permission_handler: ^11.3.1
   just_audio: ^0.9.39
   just_audio_background: ^0.0.1-beta.13
+  face_emotion_detector: ^0.0.4
 
 
   # The following adds the Cupertino Icons font to your application.

@@ -170,11 +170,20 @@ class _RecommendationScreenState extends State<ReccomendationScreen> {
                             ),
                           ),
                           const SizedBox(height: 20),
+                          // Music progress slider
+                          // Slider(
+                          //   value: audioProvider.position.inSeconds.toDouble(),
+                          //   max: audioProvider.duration?.inSeconds.toDouble() ??
+                          //       0.0,
+                          //   onChanged: (value) {
+                          //     audioProvider
+                          //         .seekTo(Duration(seconds: value.toInt()));
+                          //   },
+                          // ),
                           Row(
                             mainAxisAlignment: MainAxisAlignment.spaceAround,
                             children: [
                               // Back IconButton
-
                               IconButton(
                                 icon: const Icon(
                                   Icons.skip_previous,
@@ -197,6 +206,7 @@ class _RecommendationScreenState extends State<ReccomendationScreen> {
                                 ),
                                 onPressed: () {
                                   audioProvider.togglePlayPause();
+                                  // setState(() {});
                                 },
                               ),
 
